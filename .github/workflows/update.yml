@@ -1,0 +1,42 @@
+name: Actualizar Dashboard ETF Challenge
+
+on:
+  schedule:
+    # Se ejecuta todos los días a las 21:00 UTC (18:00 en Argentina, post cierre de mercado)
+    - cron: '0 21 * * 1-5'
+  workflow_dispatch: 
+    # Permite ejecutarlo manualmente desde GitHub cuando quieras
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar script de actualización
+        run: python build_dashboard.py
+
+      - name: Hacer commit y push del nuevo index.html
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          # Agrega el archivo index.html por si es nuevo o se modificó
+          git add index.html
+          # Si no hay cambios, no hace nada; si hay, hace el commit
+          git commit -m "📈 Actualización automática del Dashboard" || echo "No hay cambios para subir"
+          git push
