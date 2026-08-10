@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Descargar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -35,8 +35,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # Agrega el archivo index.html por si es nuevo o se modificó
           git add index.html
-          # Si no hay cambios, no hace nada; si hay, hace el commit
           git commit -m "📈 Actualización automática del Dashboard" || echo "No hay cambios para subir"
           git push
